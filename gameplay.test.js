@@ -46,10 +46,7 @@ function makeEl(id) {
 const els = {};
 ['game', 'stage', 'overlay', 'score', 'best', 'finalScore', 'finalBest', 'next', 'chain',
  'soundBtn', 'resetBtn', 'restartBtn', 'revivePrompt', 'overPanel', 'reviveScore',
- 'reviveLeft', 'reviveBtn', 'giveUpBtn', 'reviveBadge', 'reviveCount',
- 'boardBtn', 'boardBtn2', 'boardModal', 'boardList', 'boardClose', 'boardRefresh',
- 'nickInput', 'myNameLabel', 'submitBtn', 'submitBox', 'submitMsg', 'editNameBtn',
- 'sponsorModal', 'sponsorBtn', 'sponsorClose', 'sponsorOk'
+ 'reviveLeft', 'reviveBtn', 'giveUpBtn', 'reviveBadge', 'reviveCount'
 ].forEach((id) => { els[id] = makeEl(id); });
 els.revivePrompt.hidden = true;
 els.overPanel.hidden = false;
@@ -84,9 +81,6 @@ vm.createContext(sandbox);
 const load = (f) => vm.runInContext(fs.readFileSync(path.join(root, f), 'utf8'), sandbox, { filename: f });
 load('assets/fruits/parts.js');
 load('game.js');
-
-let gameOverCalls = 0;
-sandbox.window.DanaiwaBoard = { onGameOver() { gameOverCalls++; return 'orig'; } };
 
 const G = sandbox.window.__DNW__;
 
@@ -129,16 +123,13 @@ eq(els.reviveBadge.hidden, true, '徽章跟着隐藏');
 /* ---------- C. 越线时的两屏 ---------- */
 console.log('\n[C] 越线时：有次数先问，没次数直接结算');
 G.reset();
-gameOverCalls = 0;
 G.state.balls = [ball(600), ball(300)];
 G.gameOver();
 eq(els.overlay.classList.contains('show'), true, '遮罩弹出');
 eq(els.revivePrompt.hidden, true, '没次数 → 不弹询问屏');
 eq(els.overPanel.hidden, false, '直接是结算屏');
-eq(gameOverCalls, 1, '成绩已提交');
 
 G.reset();
-gameOverCalls = 0;
 G.addScore(2000);
 G.state.balls = [ball(600), ball(300), ball(120)];
 G.gameOver();
@@ -146,7 +137,6 @@ eq(els.revivePrompt.hidden, false, '有次数 → 弹询问屏');
 eq(els.overPanel.hidden, true, '结算屏让位');
 eq(els.reviveScore.textContent, 2000, '询问屏显示本局得分');
 eq(els.reviveLeft.textContent, '还剩 1 枚', '显示剩余枚数');
-eq(gameOverCalls, 0, '还没提交成绩');
 
 /* ---------- D. revive() 本身 ---------- */
 console.log('\n[D] revive()：消耗一次、清掉线上的水果');

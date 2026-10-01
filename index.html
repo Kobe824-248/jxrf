@@ -38,7 +38,7 @@
           <div class="dialog-emoji">😵</div>
           <h2>还能再救一下</h2>
           <p class="dialog-score">本局得分 <strong id="reviveScore">0</strong></p>
-          <p class="revive-hint">清掉警戒线以上的水果，接着玩</p>
+          <p class="revive-hint">清掉警戒线以上的贾许然飞，接着玩</p>
           <div class="dialog-actions">
             <button class="btn" id="giveUpBtn" type="button">不了，结束吧</button>
             <button class="btn btn-revive" id="reviveBtn" type="button">🪙 用一枚复活币</button>
@@ -48,23 +48,13 @@
 
         <!-- ===== 第二屏：正式结算 ===== -->
         <div id="overPanel">
-          <div class="dialog-emoji">🍉</div>
+          <div class="dialog-emoji">💥</div>
           <h2 id="overTitle">游戏结束</h2>
           <p class="dialog-score">本局得分 <strong id="finalScore">0</strong></p>
           <p class="dialog-best">最高分 <span id="finalBest">0</span></p>
 
-          <div class="submit-box" id="submitBox">
-            <p class="submit-msg" id="submitMsg">正在结算…</p>
-            <p class="my-name">昵称：<strong id="myNameLabel">默认用户</strong>
-              <button class="link-btn" id="editNameBtn" type="button">改昵称</button>
-            </p>
-            <button class="btn" id="submitBtn" type="button" hidden>重试提交</button>
-          </div>
-
           <div class="dialog-actions">
-            <button class="btn" id="boardBtn2" type="button">🏆 排行榜</button>
             <button class="btn btn-primary" id="restartBtn" type="button">再来一局</button>
-            <button class="btn btn-sponsor btn-wide" id="sponsorBtn" type="button">🌶️ 可以赏作者一包辣条嘛</button>
           </div>
           <p class="dialog-hint">按 R 键也可重新开始</p>
         </div>
@@ -104,9 +94,6 @@
     </div>
 
     <div class="actions">
-      <button class="btn btn-wide" id="boardBtn" type="button">
-        <span class="ico">🏆</span><span class="lbl">排行榜</span>
-      </button>
       <button class="btn" id="soundBtn" type="button" aria-pressed="true">
         <span class="ico">🔊</span><span class="lbl">音效开</span>
       </button>
@@ -125,55 +112,10 @@
 
 </main>
 
-<!-- ===== 排行榜弹窗 ===== -->
-<div class="modal" id="boardModal" aria-hidden="true" role="dialog" aria-label="排行榜">
-  <div class="modal-card">
-    <header class="modal-head">
-      <h2>🏆 最近高手榜</h2>
-      <button class="icon-btn" id="boardClose" type="button" aria-label="关闭">✕</button>
-    </header>
-    <div class="nick-row">
-      <label class="nick-label" for="nickInput">我的昵称</label>
-      <input class="nick-input" id="nickInput" type="text" maxlength="12"
-             placeholder="默认用户" autocomplete="nickname" enterkeyhint="done">
-    </div>
-    <div class="board-list" id="boardList"></div>
-    <footer class="modal-foot">
-      <span class="board-note">只取最近 20 次提交，成绩会被后来的人挤下去</span>
-      <button class="btn" id="boardRefresh" type="button">刷新</button>
-    </footer>
-  </div>
-</div>
-
-<!-- ===== 赞助作者弹窗 ===== -->
-<div class="modal" id="sponsorModal" aria-hidden="true" role="dialog" aria-label="赞助作者">
-  <div class="modal-card">
-    <header class="modal-head">
-      <h2>🌶️ 请作者吃包辣条</h2>
-      <button class="icon-btn" id="sponsorClose" type="button" aria-label="关闭">✕</button>
-    </header>
-    <div class="sponsor-body">
-      <p class="sponsor-note">这游戏完全免费，也没有任何广告。<br>
-        要是它逗你笑了一下，赏作者一包辣条呗 🌶️</p>
-      <img class="sponsor-qr" src="assets/sponsor-qr.jpg" width="480" height="480"
-           alt="微信收款码" loading="lazy" decoding="async">
-      <p class="sponsor-hint">微信扫一扫 · 一包辣条 · 全凭心意</p>
-    </div>
-    <footer class="modal-foot">
-      <span class="board-note">谢谢每一位投喂的玩家 ❤️</span>
-      <button class="btn" id="sponsorOk" type="button">关闭</button>
-    </footer>
-  </div>
-</div>
-
 <!-- 碰撞形状数据（按贴图轮廓自动生成，由 tools/build_parts.py 产出） -->
 <script src="assets/fruits/parts.js"></script>
 <!-- 极模糊占位图（内联 data URL，由 tools/make_blur.py 产出）：贴图没到位时先画它 -->
 <script src="assets/fruits/blur.js"></script>
 <script src="game.js"></script>
-<!-- 排行榜 -->
-<script src="leaderboard.min.js"></script>
-<!-- 赞助作者 -->
-<script src="sponsor.js"></script>
 </body>
 </html>
