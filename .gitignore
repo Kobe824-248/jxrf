@@ -6,6 +6,9 @@ _*
 __pycache__/
 *.pyc
 
+# 本地虚拟环境（素材处理脚本用，不提交）
+.venv/
+
 # 系统
 Thumbs.db
 .DS_Store

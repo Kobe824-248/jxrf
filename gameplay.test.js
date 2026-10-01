@@ -1,5 +1,5 @@
 /* ============================================================
- *  玩法自检：复活系统 + 神奶蛙清场
+ *  玩法自检：复活系统 + 神贾许然飞清场
  *  运行：node gameplay.test.js
  *
  *  覆盖：
@@ -7,7 +7,7 @@
  *    · 复活币只在本局有效，reset() 清零
  *    · 越线时有次数才弹询问屏，没次数直接结算
  *    · revive()：消耗一次、清掉警戒线以上的水果、解除判负、没次数返回 false
- *    · 两只神奶蛙相撞：一起消失、+500、大字飘分、定格、额外送一枚复活币
+ *    · 两只神贾许然飞相撞：一起消失、+500、大字飘分、定格、额外送一枚复活币
  * ============================================================ */
 'use strict';
 const fs = require('fs'), path = require('path'), vm = require('vm');
@@ -166,22 +166,22 @@ eq(els.reviveBadge.hidden, true, '次数归零 → 徽章隐藏');
 eq(G.revive(), false, '没次数时再调返回 false');
 eq(G.revive(), false, '没判负时也返回 false');
 
-/* ---------- E. 神奶蛙清场 ---------- */
-console.log('\n[E] 两只神奶蛙一起炸掉');
+/* ---------- E. 神贾许然飞清场 ---------- */
+console.log('\n[E] 两只神贾许然飞一起炸掉');
 G.reset();
 const r10 = G.FRUITS[10].r;
 G.state.balls.length = 0;
 const wa = G.makeBall(210, 500, 10, 0, 0); wa.landed = true; wa.py = wa.y;
 const wb = G.makeBall(210, 500 - (2 * r10 + 0.6), 10, 0, 0); wb.landed = true; wb.py = wb.y;
 G.state.balls.push(wa, wb);
-eq(G.state.balls.length, 2, '先摆好两只神奶蛙');
+eq(G.state.balls.length, 2, '先摆好两只神贾许然飞');
 
 let merged = false;
 for (let i = 0; i < 60 && !merged; i++) {
   G.stepPhysics(1 / 60);
   if (G.state.balls.length === 0) merged = true;
 }
-ok(merged, '两只神奶蛙相撞后一起消失');
+ok(merged, '两只神贾许然飞相撞后一起消失');
 eq(G.state.score, G.MAX_BONUS, '得分正好是 MAX_BONUS');
 eq(G.MAX_BONUS, 500, 'MAX_BONUS 是 500（原来是 100）');
 ok(G.state.freeze > 0, '触发了定格（freeze > 0）');
@@ -190,7 +190,7 @@ const bigFloat = G.state.floats.filter((f) => f.big);
 eq(bigFloat.length, 1, '有且只有一个大字飘分（不会和普通飘字重复）');
 eq(bigFloat[0].text, '+500', '大字写的是 +500');
 eq(G.state.floats.length, 2, '一共就两行飘字：大字 +500、小字说明');
-ok(G.state.floats.some((f) => f.text.indexOf('两个神奶蛙') >= 0), '还有一行「两个神奶蛙」说明文字');
+ok(G.state.floats.some((f) => f.text.indexOf('两个神贾许然飞') >= 0), '还有一行「两个神贾许然飞」说明文字');
 eq(G.state.revives, 1, '额外送了一枚复活币');
 eq(els.reviveBadge.hidden, false, '徽章就此出现');
 

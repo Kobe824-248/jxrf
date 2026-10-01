@@ -16,6 +16,7 @@
 输出： assets/fruits/parts.js  + 控制台贴合度报表（IoU）
 """
 import argparse
+import glob
 import json
 import math
 import os
@@ -23,8 +24,8 @@ import numpy as np
 from PIL import Image
 
 OUT = os.path.join("assets", "fruits")
-TIERS = ["grape", "cherry", "orange", "lemon", "kiwi",
-         "tomato", "peach", "pineapple", "coconut", "halfmelon", "watermelon"]
+# 贴图文件名是 NN-<主题>.png，换皮后主题名会变，所以不写死在这里；
+# 需要主题名时用 tier_name() 从文件名反推。
 
 CANVAS = 512
 FILL = 0.92                      # 与 normalize_assets.py 保持一致
@@ -32,8 +33,8 @@ SCALE = CANVAS * FILL / 2.0      # 画布像素 → r 单位的换算系数
 
 
 def find_sprite(i):
-    p = os.path.join(OUT, "%02d-%s.png" % (i, TIERS[i - 1]))
-    return p if os.path.exists(p) else None
+    hits = sorted(glob.glob(os.path.join(OUT, "%02d-*.png" % i)))
+    return hits[0] if hits else None
 
 
 def euclid_dt(mask):
@@ -170,6 +171,12 @@ def fill_gaps(mask, dt, circles, budget, min_r, target=0.97):
     return circles
 
 
+def tier_name(i):
+    """从贴图文件名里取主题后缀，只用于打印报表"""
+    p = find_sprite(i)
+    return os.path.basename(p).rsplit("-", 1)[-1][:-4] if p else "tier%d" % i
+
+
 def build(i, grid, min_fill, max_parts):
     path = find_sprite(i)
     im = Image.open(path).convert("RGBA")
@@ -227,7 +234,7 @@ def main():
         r = build(i, args.grid, args.min_fill, args.max_parts)
         data.append({"parts": r["parts"], "rb": r["rb"]})
         print("%-4d %-11s %5d %7.3f %6.1f%% %6.1f%%   %.3f"
-              % (i - 1, TIERS[i - 1], r["count"], r["iou"], r["recall"] * 100,
+              % (i - 1, tier_name(i), r["count"], r["iou"], r["recall"] * 100,
                  r["bulge"] * 100, r["rb"]))
 
     js = ("/* 自动生成，请勿手改 —— 由 tools/build_parts.py 生成\n"

@@ -1,5 +1,5 @@
 /* ============================================================
- *  合成大奶娃 · Suika Game
+ *  合成大贾许然飞 · Suika Game
  *  纯原生 HTML + CSS + JavaScript，无任何依赖。
  *
  *  物理：PBD（位置约束求解）—— 3 个子步 × 6 次迭代，
@@ -27,11 +27,11 @@
   const REST_SPEED = 140;    // 线上方且速度低于它才算“卡住”（被弹飞路过的不算）
   const REST_SPEED2 = REST_SPEED * REST_SPEED;
 
-  const MAX_TIER  = 10;      // 最大那只（神奶蛙）的索引
-  const MAX_BONUS = 500;     // 两只神奶蛙相撞的奖励分
+  const MAX_TIER  = 10;      // 最大那只（神贾许然飞）的索引
+  const MAX_BONUS = 500;     // 两只神贾许然飞相撞的奖励分
                              // （原来是 100 —— 合出全游戏最难的东西只给 100 分，太寒酸；
                              //  而且它同时清掉两块最大的水果、相当于救一条命，值这个价）
-  const MAX_MERGE_GIVES_REVIVE = true;  // 两只神奶蛙一起炸掉时，额外送一枚复活币
+  const MAX_MERGE_GIVES_REVIVE = true;  // 两只神贾许然飞一起炸掉时，额外送一枚复活币
   const FREEZE_MS = 130;     // 清场时的定格，让这一下有重量
   const REVIVE_STEP = 2000;  // 每累计多少分，发一枚复活币
   const MERGE_PAD = 0.8;     // 合成判定的接触容差（px）
@@ -44,35 +44,35 @@
   const SQUASH_DECAY     = 9;     // 挤压回弹速度
   const SQUASH_MAX       = 0.30;  // 最大挤压变形
 
-  /* 水果链：索引越大越大
+  /* 合成链：索引越大越大
      file : assets/fruits/ 下的贴图（由 tools/normalize_assets.py 统一生成）
      c1/c2: 贴图缺失时的程序化水果配色
      pc1/pc2: 粒子/汁水的颜色（取自贴图主体平均色） */
   const ASSET_FILL = 0.92;   // 贴图里主体占画布长边的比例，与生成脚本保持一致
 
   const FRUITS = [
-    { name: '葡萄',   r: 17,  c1: '#c084f5', c2: '#7a3fb0', line: 'rgba(74,26,120,.35)',
-      file: 'assets/fruits/01-grape.webp',     pc1: '#e9c466', pc2: '#b8903a' },
-    { name: '樱桃',   r: 23,  c1: '#ff8a99', c2: '#c62346', line: 'rgba(120,10,40,.35)',
-      file: 'assets/fruits/02-cherry.webp',    pc1: '#ffe684', pc2: '#d8b44f' },
-    { name: '橘子',   r: 31,  c1: '#ffc06a', c2: '#e0741a', line: 'rgba(140,62,0,.32)',
-      file: 'assets/fruits/03-orange.webp',    pc1: '#fdd865', pc2: '#cfa63f' },
-    { name: '柠檬',   r: 39,  c1: '#fff285', c2: '#e0b000', line: 'rgba(140,110,0,.32)',
-      file: 'assets/fruits/04-lemon.webp',     pc1: '#f6cd63', pc2: '#c9a040' },
-    { name: '猕猴桃', r: 48,  c1: '#b9e05a', c2: '#5d8c1c', line: 'rgba(60,90,10,.32)',
-      file: 'assets/fruits/05-kiwi.webp',      pc1: '#c4a559', pc2: '#94793c' },
-    { name: '番茄',   r: 58,  c1: '#ff8a66', c2: '#c62f28', line: 'rgba(120,20,10,.32)',
-      file: 'assets/fruits/06-tomato.webp',    pc1: '#fbd75a', pc2: '#cba63c' },
-    { name: '桃子',   r: 69,  c1: '#ffd0d0', c2: '#ea7f93', line: 'rgba(160,60,80,.3)',
-      file: 'assets/fruits/07-peach.webp',     pc1: '#f7c45a', pc2: '#c99a3e' },
-    { name: '菠萝',   r: 81,  c1: '#ffe07a', c2: '#c88a12', line: 'rgba(130,80,0,.32)',
-      file: 'assets/fruits/08-pineapple.webp', pc1: '#ffd37b', pc2: '#d1a252' },
-    { name: '椰子',   r: 94,  c1: '#f0e2c6', c2: '#9b7b4f', line: 'rgba(90,64,32,.35)',
-      file: 'assets/fruits/09-coconut.webp',   pc1: '#ffd771', pc2: '#d3a94e' },
-    { name: '半奶蛙', r: 108, c1: '#ff9d78', c2: '#c23a2c', line: 'rgba(120,24,16,.32)',
-      file: 'assets/fruits/10-halfmelon.webp', pc1: '#ccab68', pc2: '#9c8047' },
-    { name: '神奶蛙', r: 124, c1: '#7ce878', c2: '#1c8a33', line: 'rgba(12,70,24,.4)',
-      file: 'assets/fruits/11-watermelon.webp', pc1: '#eece9b', pc2: '#c0a271' }
+    { name: '迷你贾许然飞', r: 17, c1: '#dcc6ae', c2: '#756a5d', line: 'rgba(80,55,40,.35)',
+      file: 'assets/fruits/01-jxrf.webp', pc1: '#c0ad98', pc2: '#8b7d6e' },
+    { name: '小贾许然飞', r: 23, c1: '#c8a793', c2: '#6b594e', line: 'rgba(80,55,40,.35)',
+      file: 'assets/fruits/02-jxrf.webp', pc1: '#af9281', pc2: '#7e695d' },
+    { name: '贾许然飞', r: 31, c1: '#5d4d46', c2: '#322925', line: 'rgba(80,55,40,.35)',
+      file: 'assets/fruits/03-jxrf.webp', pc1: '#51433d', pc2: '#3b302c' },
+    { name: '大贾许然飞', r: 39, c1: '#d1beb6', c2: '#706661', line: 'rgba(80,55,40,.35)',
+      file: 'assets/fruits/04-jxrf.webp', pc1: '#b7a69f', pc2: '#847873' },
+    { name: '巨贾许然飞', r: 48, c1: '#82614e', c2: '#45342a', line: 'rgba(80,55,40,.35)',
+      file: 'assets/fruits/05-jxrf.webp', pc1: '#715544', pc2: '#523d31' },
+    { name: '贾许然飞哥', r: 58, c1: '#efbea5', c2: '#7f6658', line: 'rgba(80,55,40,.35)',
+      file: 'assets/fruits/06-jxrf.webp', pc1: '#d1a690', pc2: '#967868' },
+    { name: '贾许然飞王', r: 69, c1: '#735646', c2: '#3d2e25', line: 'rgba(80,55,40,.35)',
+      file: 'assets/fruits/07-jxrf.webp', pc1: '#644c3d', pc2: '#48362c' },
+    { name: '超级贾许然飞', r: 81, c1: '#c18e71', c2: '#674c3c', line: 'rgba(80,55,40,.35)',
+      file: 'assets/fruits/08-jxrf.webp', pc1: '#a97c63', pc2: '#7a5947' },
+    { name: '究极贾许然飞', r: 94, c1: '#9d8756', c2: '#54482e', line: 'rgba(80,55,40,.35)',
+      file: 'assets/fruits/09-jxrf.webp', pc1: '#89764c', pc2: '#635536' },
+    { name: '半神贾许然飞', r: 108, c1: '#e3b68b', c2: '#79614a', line: 'rgba(80,55,40,.35)',
+      file: 'assets/fruits/10-jxrf.webp', pc1: '#c69f7a', pc2: '#8f7358' },
+    { name: '神贾许然飞', r: 124, c1: '#d09670', c2: '#6f503c', line: 'rgba(80,55,40,.35)',
+      file: 'assets/fruits/11-jxrf.webp', pc1: '#b68362', pc2: '#835e47' }
   ];
 
   /* 合成出 tier 的得分（三角数） */
@@ -527,7 +527,7 @@
       const tier = a.tier;
 
       if (tier >= MAX_TIER) {
-        /* 两只神奶蛙 → 一起炸掉，拿一大笔奖励分（外加一枚复活币）。
+        /* 两只神贾许然飞 → 一起炸掉，拿一大笔奖励分（外加一枚复活币）。
            注意：它同时清掉了两块最大的水果，是后期唯一的泄压阀，不能取消。
            分数的飘字不用 addScore 那个普通的，下面单独给了「大字 +500」。 */
         addScore(MAX_BONUS);
@@ -537,7 +537,7 @@
         haptic(70);
         state.flash = 1.4;                    // 比普通合成更亮的全屏闪
         state.freeze = FREEZE_MS / 1000;      // 定格一下，让这一下有重量
-        state.floats.push({ x: mx, y: my - 74, text: '两个神奶蛙 💥', life: 1.6 });
+        state.floats.push({ x: mx, y: my - 74, text: '两个神贾许然飞 💥', life: 1.6 });
         state.floats.push({ x: mx, y: my - 16, text: '+' + MAX_BONUS, life: 2.2, big: true });
         if (MAX_MERGE_GIVES_REVIVE) {
           state.revives++;
@@ -851,7 +851,7 @@
     c.fillStyle = g;
     c.fill();
 
-    /* 半奶蛙 / 神奶蛙 的纹理 */
+    /* 最大两级（半神 / 神）的纹理 —— 只在贴图全挂、退回程序化绘制时用 */
     if (tier === MAX_TIER) {
       c.save();
       c.beginPath();
