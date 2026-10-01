@@ -9,7 +9,7 @@
 
 ## 🎮 在线玩
 
-**（部署到自己仓库的 GitHub Pages 后，把地址填到这里）**
+**<https://kobe824-248.github.io/jxrf/>**
 
 （GitHub Pages 托管，手机浏览器打开就能玩，也可以「添加到主屏幕」当 App 用。）
 
@@ -77,6 +77,7 @@ for (const b of balls) {
 
 线上直接开 <https://yhsome.github.io/BigNaiWa/>；
 本地双击 `index.html` 即可（`file://` 协议下也能跑，排行榜已移除、全程不联网）。
+线上：<https://kobe824-248.github.io/jxrf/>
 也可以起个静态服务：
 
 ```bash
