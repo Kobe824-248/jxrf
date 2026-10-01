@@ -182,7 +182,16 @@ pip install rembg onnxruntime pillow numpy
 首次运行会自动下载 `u2net_human_seg.onnx`（约 168 MB）到 `~/.u2net/`。
 **国内直连 github.com 会超时**，可以先手动下好再跑：
 
+```powershell
+# Windows（先建目录，不然 curl 会报路径不存在）
+New-Item -ItemType Directory -Force "$env:USERPROFILE\.u2net" | Out-Null
+curl.exe -L -o "$env:USERPROFILE\.u2net\u2net_human_seg.onnx" `
+  https://ghfast.top/https://github.com/danielgatis/rembg/releases/download/v0.0.0/u2net_human_seg.onnx
+```
+
 ```bash
+# macOS / Linux
+mkdir -p ~/.u2net
 curl -L -o ~/.u2net/u2net_human_seg.onnx \
   https://ghfast.top/https://github.com/danielgatis/rembg/releases/download/v0.0.0/u2net_human_seg.onnx
 ```
