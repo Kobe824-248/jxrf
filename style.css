@@ -364,7 +364,6 @@ body {
 
 .btn:disabled { opacity: .55; cursor: default; transform: none; }
 
-.btn-wide { grid-column: 1 / -1; }
 
 .btn-primary {
   color: #fff;

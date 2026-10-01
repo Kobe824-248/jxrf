@@ -5,7 +5,7 @@
 
 > **换皮说明**：这是 [YHSome/BigNaiWa](https://github.com/YHSome/BigNaiWa)（原名「合成大奶娃」）的二次修改版，
 > 把 11 级水果贴图换成了同一个人的 11 张照片。玩法、物理、渲染都沿用原项目（排行榜、赞助弹窗已移除），
-> 换皮流程见下面的「素材（换图）」。
+> 换皮流程见下面的「素材（换图）」。下文沿用原项目的叫法，把合成链上的每一级统称为「水果」（实际显示的是人像）。
 
 ## 🎮 在线玩
 
@@ -87,6 +87,7 @@ python -m http.server 8080
 
 部署：仓库打开 **Settings → Pages → Source = Deploy from a branch → main / (root)** 即可，
 根目录已经放了 `.nojekyll`，静态文件原样发布。
+本项目已经部署在 <https://kobe824-248.github.io/jxrf/>，push 到 `main` 后会自动重建。
 
 ## 文件
 
@@ -95,16 +96,24 @@ python -m http.server 8080
 | `index.html` | 页面结构：棋盘、结束遮罩、侧边面板 |
 | `style.css` | 全部样式：玻璃拟态面板、响应式布局、结束动画 |
 | `game.js` | 游戏逻辑 + 自研物理 + Canvas 渲染 + WebAudio 音效 |
-| `assets/fruits/` | 水果贴图：`*.png` 是 512×512 的源图，页面实际加载的是 `*.webp`；另有 `parts.js` 碰撞形状、`blur.js` 极模糊占位图 |
+| `assets/fruits/` | 贴图：`*.png` 是 512×512 的源图，页面实际加载的是 `*.webp`；另有 `parts.js` 碰撞形状、`blur.js` 极模糊占位图 |
 | `tools/normalize_photos.py` | **本项目**的照片换皮脚本：AI 人像分割抠底 + 统一画布 |
 | `tools/normalize_assets.py` | 原作者的素材统一脚本（物件图/单色底用）：区域生长抠底、去噪、烤暗边 |
-| `tools/optimize_sprites.py` | 把源图压成 WebP 并裁到每级实际需要的尺寸（1.45 MB → 0.19 MB） |
-| `tools/make_blur.py` | 生成极模糊占位图 `blur.js`（11 张缩略图拼成一条、内联成 data URL，约 8 KB） |
+| `tools/optimize_sprites.py` | 把源图压成 WebP 并裁到每级实际需要的尺寸（本项目实测 1.62 MB → 0.14 MB） |
+| `tools/make_blur.py` | 生成极模糊占位图 `blur.js`（11 张缩略图拼成一条、内联成 data URL，约 6.6 KB） |
 | `tools/build_parts.py` | 按贴图轮廓生成碰撞形状，产出 `assets/fruits/parts.js` |
-| `src/` | 原始素材（11 张，格式/尺寸/底色都不统一），只作为脚本输入 |
+| `src/` | 原始照片 11 张（命名 `1`~`11`），只作为脚本输入；`src/_orig/` 里是原作者水果素材的备份 |
 | `physics.test.js` | 物理手感自检脚本（`node physics.test.js`） |
 | `gameplay.test.js` | 复活 / 清场玩法自检（`node gameplay.test.js`） |
-| `preview.png` | 预览图 |
+| `preview.png` | 预览图（用最终贴图渲染的效果示意图，不是浏览器截图） |
+
+本地目录（都不进仓库，`_` 开头已由 `.gitignore` 忽略）：
+
+| 目录 | 说明 |
+| --- | --- |
+| `.venv/` | 做素材用的 Python 环境（rembg / onnxruntime / opencv…），**游戏运行不需要它** |
+| `src/_orig/`、`assets/fruits/_orig/` | 原作者水果素材的备份（随时可回到原版） |
+| `_preview/` | 效果对比图（`final-look.png` 等） |
 
 ## 碰撞形状（不是圆）
 
@@ -131,10 +140,20 @@ window.SUIKA_PARTS = [ { rb: 1.083, parts: [[0.012,-0.31,0.42], ...] }, ... ];
 
 实测贴合度（IoU，1.0 = 与图片完全一致）：
 
+原素材（水果，圆润饱满），`--max-parts 16`：
+
 ```
 tier  0   1   2   3   4   5   6   7   8   9  10
 IoU .94 .96 .95 .92 .85 .90 .81 .96 .94 .96 .78   ← 平均 0.91
 超出轮廓 ≤1.2%（几乎为零）  圆个数 9~16（形状简单自动用更少）
+```
+
+本项目（人像，瘦长且四肢分离），`--grid 6 --max-parts 32`：
+
+```
+tier  0   1   2   3   4   5   6   7   8   9  10
+IoU .84 .87 .78 .78 .76 .80 .74 .80 .72 .87 .86   ← 平均 0.80
+覆盖率 72~87%   超出轮廓 ≤0.9%   圆个数 32（顶到上限）
 ```
 
 `parts.js` 缺失或某级没数据时，自动退回成单圆（半径 r），行为与旧版一致，不会白屏。
@@ -142,11 +161,12 @@ IoU .94 .96 .95 .92 .85 .90 .81 .96 .94 .96 .78   ← 平均 0.91
 重新生成（换了贴图之后跑一次）：
 
 ```bash
-python tools/build_parts.py --max-parts 16 --preview
+python tools/build_parts.py --grid 6 --max-parts 32 --preview
 # --preview 会导出 _parts_preview.png：红=图片轮廓 绿=碰撞箱 黄=重合
 ```
 
-成本：12~30 个水果在场时，整套物理每帧 **0.14~0.34 ms**（60fps 预算是 16.7ms）。
+成本：人像贴图的圆数从 9~16 涨到 **32**，实测 12~17 个球在场（384~544 个子圆）时整套物理每帧
+**0.53~1.26 ms** —— 占 60fps 预算（16.7 ms）不到 8%。原素材在 12~30 个球时是 0.14~0.34 ms。
 
 ## 素材（换图）
 
@@ -260,8 +280,8 @@ python tools/optimize_sprites.py --lossless # 想完全无损就用这个
 - **素材加载**：等 `img.decode()` 完成才交给 `drawImage`，避免画出没解码完的半成品。
 - **音效**：WebAudio 振荡器实时合成，无音频文件；可一键静音并记忆设置。
 - **存档**：最高分与静音状态存 `localStorage`。
-- **调试**：控制台可用 `__SUIKA__.state`、`__SUIKA__.reset()`、`__SUIKA__.drop()`、
-  `__SUIKA__.FRUITS`、`__SUIKA__.render()`。
+- **调试**：控制台可用 `__DNW__.state`、`__DNW__.reset()`、`__DNW__.tryDrop()`、
+  `__DNW__.FRUITS`、`__DNW__.revive`、`__DNW__.render()`。
 
 ## 物理自检
 
@@ -273,10 +293,10 @@ node physics.test.js
 自由落体回弹高度、球对球弹起、12 秒堆叠稳定性（残余速度 / 漂移 / 穿墙 / NaN）、
 **静止后形状之间无穿透**、自动投放 60 次不走样、
 触屏「拖动瞄准 / 松手投放」与鼠标「按下即投」两套输入、
-**结束后空格/回车不再重开而 R 可以、输入框里不抢按键**。
+**结束后空格/回车不再重开而 R 可以、输入框里不抢按键**（昵称输入框已随排行榜一起移除，这段是防御性保留）。
 
 ```bash
-python tools/build_parts.py --max-parts 16 --preview   # 换了贴图后重新生成碰撞形状
+python tools/build_parts.py --grid 6 --max-parts 32 --preview   # 换了贴图后重新生成碰撞形状
 node physics.test.js                                   # 物理自检
 ```
 
@@ -329,6 +349,11 @@ node physics.test.js                                   # 物理自检
 - [moonfloof/suika-game](https://github.com/moonfloof/suika-game) — 使用 matter.js 的英文版克隆
 - [IceburgLettuce17/suika-game-js-beta](https://github.com/IceburgLettuce17/suika-game-js-beta)
 
-## 许可
+## 许可与说明
 
-仅供学习娱乐使用。
+- 上游项目 [YHSome/BigNaiWa](https://github.com/YHSome/BigNaiWa) 声明「仅供学习娱乐使用」，本项目沿用同样的定位。
+- 11 级贴图来自同一个人的照片，**已获得本人同意**用于这个私人娱乐版本。仓库是 public 的，
+  照片会公开可见 —— 想撤下就删仓库或关掉 Pages。
+- 抠图用的 `u2net_human_seg.onnx` 随 [rembg](https://github.com/danielgatis/rembg)（MIT）发布；
+  人脸检测用的 YuNet 来自 [opencv_zoo](https://github.com/opencv/opencv_zoo)（Apache-2.0）。
+  两者都只在**制作素材**时用到，页面运行时不需要。
