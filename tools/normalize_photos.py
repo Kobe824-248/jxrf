@@ -19,8 +19,9 @@ normalize_assets.py 里的函数，保证产出规格和原作者一致：
 依赖：
   pip install rembg onnxruntime pillow numpy
   首次运行会自动下载 u2net_human_seg.onnx（约 168 MB）到 ~/.u2net/。
-  国内直连 github.com 会超时，可以先手动下好再跑：
-    curl -L -o %USERPROFILE%\\.u2net\\u2net_human_seg.onnx ^
+  国内直连 github.com 会超时，先手动下好再跑（Windows PowerShell，可直接粘贴）：
+    New-Item -ItemType Directory -Force "$env:USERPROFILE\.u2net" | Out-Null
+    curl.exe -L -o "$env:USERPROFILE\.u2net\u2net_human_seg.onnx" `
       https://ghfast.top/https://github.com/danielgatis/rembg/releases/download/v0.0.0/u2net_human_seg.onnx
 
 跑法：
